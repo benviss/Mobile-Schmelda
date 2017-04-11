@@ -453,15 +453,23 @@ public class Level {
                 model = new Obstacle(x,y, 'y');
                 models.add(model);
                 x += SPACE;
+            }else if (item == 'w') {
+                model = new Obstacle(x, y, 'w');
+                models.add(model);
+                x += SPACE;
+            } else if (item == 't') {
+//                model = new Obstacle(x, y, '.');
+//                areas.add(a);
+//                collidables.add(t);
+//                models.add(model);
+                model = new Obstacle(x, y, 't');
+                models.add(model);
+                x += SPACE;
             }
             else {
                 x += SPACE;
             }
-//  else if (item == 'w') {
-//                w = new Water(x, y);
-//                collidables.add(w);
-//                x += SPACE;
-//            } else if (item == '.') {
+// else if (item == '.') {
 //                a = new Area(x, y);
 //                areas.add(a);
 //                x += SPACE;
@@ -566,13 +574,7 @@ public class Level {
 //                areas.add(p);
 //                collidables.add(f);
 //                x += SPACE;
-//            } else if (item == 't') {
-//                t = new Tree(x, y);
-//                a = new Area(x, y);
-//                areas.add(a);
-//                collidables.add(t);
-//                x += SPACE;
-//            } else if (item == '$') {
+//            }  else if (item == '$') {
 //                p = new Path(x, y);
 //                areas.add(p);
 //                x += SPACE;

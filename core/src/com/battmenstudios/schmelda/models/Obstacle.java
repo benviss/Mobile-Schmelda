@@ -41,6 +41,12 @@ public class Obstacle {
             image = "landscapes/rock-bottom-clo.png";
         } else if (type == 'v') {
             image = "landscapes/rock-top-cro.png";
+        } else if (type == 'w') {
+            image = "landscapes/water.png";
+        } else if (type == 't') {
+            image = "landscapes/tree.png";
+        } else if (type == '.') {
+            image = "landscapes/grass.png";
         }
         imageTexture = new Texture(image);
     }
