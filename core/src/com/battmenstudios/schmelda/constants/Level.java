@@ -380,7 +380,7 @@ public class Level {
     public static ArrayList<Obstacle> generateLevel(int level) {
         ArrayList<Obstacle> models = new ArrayList<Obstacle>();
         Obstacle model;
-        int y = 16;
+        int y = 0;
         int x = 0;
         int SPACE = 16;
         String newLevel = "";

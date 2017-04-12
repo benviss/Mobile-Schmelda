@@ -8,8 +8,8 @@ import com.battmenstudios.schmelda.states.GameStateManager;
 import com.battmenstudios.schmelda.states.MenuState;
 
 public class Schmelda extends ApplicationAdapter {
-	public static final int WIDTH = 1600;
-	public static final int HEIGHT = 960;
+	public static final int WIDTH = 800;
+	public static final int HEIGHT = 480;
 	public int currentLevel = 1;
 
 	public static final String TITLE = "Schmelda";
