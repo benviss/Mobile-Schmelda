@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.battmenstudios.schmelda.Schmelda;
-import com.battmenstudios.schmelda.states.PlayState;
+import com.battmenstudios.schmelda.screens.PlayScreen;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 
@@ -27,7 +27,7 @@ public class Chain extends Sprite{
 
     private float movementSpeed = Schmelda.DEFAULT_MOVEMENT_SPEED;
 
-    public Chain(int x, int y, PlayState state) {
+    public Chain(int x, int y, PlayScreen state) {
         this.world = state.getWorld();
         texture = new Texture("characters/chain/chain.png");
         walkAnimation = new Animation(new TextureRegion(texture), 9, 0.5f);

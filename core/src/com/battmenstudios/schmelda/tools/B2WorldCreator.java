@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.battmenstudios.schmelda.states.PlayState;
+import com.battmenstudios.schmelda.screens.PlayScreen;
 
 /**
  * Created by benvi on 4/13/2017.
@@ -17,7 +17,7 @@ import com.battmenstudios.schmelda.states.PlayState;
 
 public class B2WorldCreator {
 
-    public B2WorldCreator(PlayState state) {
+    public B2WorldCreator(PlayScreen state) {
         World world = state.getWorld();
         TiledMap map = state.getMap();
 
