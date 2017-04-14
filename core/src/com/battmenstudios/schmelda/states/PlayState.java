@@ -1,15 +1,23 @@
 package com.battmenstudios.schmelda.states;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.battmenstudios.schmelda.Schmelda;
 import com.battmenstudios.schmelda.constants.Level;
-import com.battmenstudios.schmelda.models.Obstacle;
-import com.battmenstudios.schmelda.models.sprites.Chain;
-
-import java.util.ArrayList;
+import com.battmenstudios.schmelda.sprites.Chain;
+import com.battmenstudios.schmelda.tools.B2WorldCreator;
 
 /**
  * Created by benvi on 4/10/2017.
@@ -17,35 +25,57 @@ import java.util.ArrayList;
 
 public class PlayState extends State {
     public Chain chain;
-    private Texture levelGround;
-    public ArrayList<Obstacle> models;
+
+    //TiledMapVariables
+    public TiledMap map;
+    private TiledMapRenderer renderer;
+    public int[] background;
+    public int[] foreground;
+
+    //Box2D Variables
+    private World world;
+    private Box2DDebugRenderer b2dr;
+    private B2WorldCreator creator;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
-        models = Level.generateLevel(1);
-        levelGround = new Texture("landscapes/grass.png");
-        chain = new Chain(200, 50);
+        map = Level.getLevel(1);
         cam.setToOrtho(false, Schmelda.WIDTH / 2, Schmelda.HEIGHT / 2);
+        background = new int[] {0, 1, 2, 3};
+        foreground = new int[] {4};
+        renderer = new OrthogonalTiledMapRenderer(map);
+
+        //Create World
+        world = new World(new Vector2(0, 0), true);
+        //allows for debugging lines of box2d
+        b2dr = new Box2DDebugRenderer();
+
+//        creator = new B2WorldCreator(this);
+        chain = new Chain(200, 150, this);
+
+        BodyDef bdef = new BodyDef();
+        PolygonShape shape = new PolygonShape();
+        FixtureDef fdef = new FixtureDef();
+        Body body;
+
+        //Construct World Barriers
+        for (MapObject object : map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            bdef.type = BodyDef.BodyType.StaticBody;
+            bdef.position.set((rect.getX() + rect.getWidth() / 2), (rect.getY() + rect.getHeight() / 2));
+
+            body = world.createBody(bdef);
+
+            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            fdef.shape = shape;
+            body.createFixture(fdef);
+        }
     }
 
     @Override
     protected void handleInput() {
-        chain.setVelocity(0, 0);
-        int x = 0;
-        int y = 0;
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            y = 2;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            x = -2;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            x = 2;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            y = -2;
-        }
-        chain.setVelocity(x, y);
+
     }
 
     @Override
@@ -53,27 +83,36 @@ public class PlayState extends State {
         handleInput();
         chain.update(dt);
 
-
+        world.step(1 / 60f, 6, 2);
+        cam.position.x = chain.getB2body().getPosition().x;
+        cam.position.y = chain.getB2body().getPosition().y;
+        cam.update();
     }
 
     @Override
     public void render(SpriteBatch sb) {
+        renderer.render(background);
+        renderer.setView(cam);
         sb.begin();
         sb.setProjectionMatrix(cam.combined);
-        for (int y = 16; y < Schmelda.HEIGHT; y+=16) {
-            for (int x = 0; x < Schmelda.WIDTH; x+=16) {
-                sb.draw(levelGround, x, y, 16, 16);
-            }
-        }
-        for (Obstacle o : models) {
-            sb.draw(o.getImageTexture(), o.getX(), o.getY(), 16, 16);
-        }
-        sb.draw(chain.getTexture(), chain.getPosition().x, chain.getPosition().y);
+        chain.draw(sb);
         sb.end();
+        renderer.render(foreground);
+
+        b2dr.render(world, cam.combined);
+
     }
 
     @Override
     public void dispose() {
+        map.dispose();
+    }
 
+    public TiledMap getMap() {
+        return map;
+    }
+
+    public World getWorld() {
+        return world;
     }
 }

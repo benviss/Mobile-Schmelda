@@ -17,7 +17,7 @@ public class MenuState extends State{
         super(gsm);
         cam.setToOrtho(false, Schmelda.WIDTH / 2, Schmelda.HEIGHT / 2);
         background = new Texture("landscapes/bg.png");
-        playBtn = new Texture("characters/chain.png");
+        playBtn = new Texture("characters/chain/chain.png");
     }
 
     @Override

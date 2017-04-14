@@ -10,17 +10,21 @@ import com.battmenstudios.schmelda.states.MenuState;
 public class Schmelda extends ApplicationAdapter {
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 480;
+//	public static final float PPM = 100;
 	public int currentLevel = 1;
 
 	public static final String TITLE = "Schmelda";
 	private GameStateManager gsm;
 	private SpriteBatch batch;
 
+	//Default Chain Attributes
+	public static final float DEFAULT_MOVEMENT_SPEED = 75;
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		gsm = new GameStateManager();
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0,0,0,0);
 		gsm.push(new MenuState(gsm));
 	}
 
