@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.battmenstudios.schmelda.Schmelda;
 import com.battmenstudios.schmelda.constants.Level;
+import com.battmenstudios.schmelda.scenes.Hud;
 import com.battmenstudios.schmelda.sprites.Chain;
 import com.battmenstudios.schmelda.tools.B2WorldCreator;
 
@@ -31,6 +32,7 @@ public class PlayScreen implements Screen {
     //Game references
     private Schmelda game;
 
+    //Chain Gang
     public Chain chain;
 
     //CameraVariables
@@ -49,6 +51,11 @@ public class PlayScreen implements Screen {
     private Box2DDebugRenderer b2dr;
     private B2WorldCreator creator;
 
+    //HUD Display
+    private Hud hud;
+
+    //For Touch Processing
+
     public PlayScreen(Schmelda game) {
         this.game = game;
 
@@ -62,6 +69,9 @@ public class PlayScreen implements Screen {
         background = new int[] {0, 1, 2, 3};
         foreground = new int[] {4};
         renderer = new OrthogonalTiledMapRenderer(map);
+
+        //Generates HUD display
+        hud = new Hud(game.batch);
 
         //Initially centers gamecam position
         gamecam.position.set(gamePort.getWorldWidth(), gamePort.getWorldHeight(), 0);
@@ -93,14 +103,19 @@ public class PlayScreen implements Screen {
             fdef.shape = shape;
             body.createFixture(fdef);
         }
-    }
 
-    public void handleInput() {
 
     }
+
+    public void handleInput(float dt) {
+        if (Gdx.input.justTouched()) {
+            hud.update(dt);
+        }
+    }
+
 
     public void update(float dt) {
-        handleInput();
+        handleInput(dt);
         chain.update(dt);
 
         world.step(1 / 60f, 6, 2);
@@ -133,6 +148,10 @@ public class PlayScreen implements Screen {
 //        chain.draw(game.batch);
         game.batch.end();
 
+        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        hud.update(dt);
+        hud.stage.draw();
+
         renderer.render(foreground);
 
     }
@@ -163,7 +182,7 @@ public class PlayScreen implements Screen {
         renderer.dispose();
         world.dispose();
         b2dr.dispose();
-
+        hud.dispose();
     }
 
     public TiledMap getMap() {
@@ -173,4 +192,5 @@ public class PlayScreen implements Screen {
     public World getWorld() {
         return world;
     }
+
 }

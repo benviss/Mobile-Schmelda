@@ -3,7 +3,9 @@ package com.battmenstudios.schmelda.sprites;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -11,7 +13,6 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.battmenstudios.schmelda.Schmelda;
 import com.battmenstudios.schmelda.screens.PlayScreen;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 
 /**
@@ -61,7 +62,7 @@ public class Chain extends Sprite{
             y -= movementSpeed;
         }
         this.b2body.setLinearVelocity(x, y);
-//        redefineChain((int) x, (int)y);
+////        redefineChain((int) x, (int)y);
     }
 
     public void draw(SpriteBatch sb) {
@@ -106,4 +107,7 @@ public class Chain extends Sprite{
         return b2body;
     }
 
+    public float getMovementSpeed() {
+        return movementSpeed;
+    }
 }
