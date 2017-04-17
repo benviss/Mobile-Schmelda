@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -22,6 +23,8 @@ public class MainMenuScreen implements Screen{
     private World world;
     private boolean alreadyClicked = false;
 
+    ParticleEffect flameLeft;
+    ParticleEffect flameRight;
 
     public MainMenuScreen(Schmelda game) {
         this.game = game;
@@ -33,6 +36,15 @@ public class MainMenuScreen implements Screen{
         background = new Texture("landscapes/bg.png");
         playBtn = new Texture("characters/chain/chain.png");
 
+        flameLeft = new ParticleEffect();
+        flameLeft.load(Gdx.files.internal("Particles/flame_1"), Gdx.files.internal(""));
+        flameLeft.getEmitters().first().setPosition(Gdx.graphics.getWidth()/4 - 150, Gdx.graphics.getHeight()/4 - 100);
+        flameLeft.start();
+
+        flameRight = new ParticleEffect();
+        flameRight.load(Gdx.files.internal("Particles/flame_1"), Gdx.files.internal(""));
+        flameRight.getEmitters().first().setPosition(Gdx.graphics.getWidth()/4 + 150, Gdx.graphics.getHeight()/4 - 100);
+        flameRight.start();
 //        gamecam.position.set(gamePort.getWorldWidth(), gamePort.getWorldHeight(), 0);
 //        gamecam.position.set(Schmelda.WIDTH, Schmelda.HEIGHT, 0);
 
@@ -62,10 +74,25 @@ public class MainMenuScreen implements Screen{
         update(dt);
 
         game.batch.setProjectionMatrix(gamecam.combined);
+
+        flameLeft.update(Gdx.graphics.getDeltaTime());
+        flameRight.update(Gdx.graphics.getDeltaTime());
+
         game.batch.begin();
+
         game.batch.draw(background, 0, 0);
         game.batch.draw(playBtn, gamecam.position.x - playBtn.getWidth() / 2, gamecam.position.y);
+
+        flameLeft.draw(game.batch);
+        flameRight.draw(game.batch);
+
+
         game.batch.end();
+
+        if(flameLeft.isComplete())
+            flameLeft.reset();
+        if(flameRight.isComplete())
+            flameRight.reset();
     }
 
     @Override
