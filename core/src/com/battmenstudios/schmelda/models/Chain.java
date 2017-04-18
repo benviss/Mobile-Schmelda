@@ -119,17 +119,17 @@ public class Chain extends Sprite{
     public State getState() {
         float x =  inputVelocityX;
         float y =  inputVelocityY;
-
-        if (x > 0.3) {
+        float dz = 0.3f;
+        if (x > dz) {
             x = 1;
-        } else if (x < -0.3) {
+        } else if (x < -dz) {
             x = -1;
         } else {
             x = 0;
         }
-        if (y > 0.3) {
+        if (y > dz) {
             y = 1;
-        } else if (y < -0.3) {
+        } else if (y < -dz) {
             y = -1;
         } else {
             y = 0;
