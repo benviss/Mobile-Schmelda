@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.battmenstudios.schmelda.Schmelda;
 
@@ -29,24 +28,26 @@ public class MainMenuScreen implements Screen{
     public MainMenuScreen(Schmelda game) {
         this.game = game;
 
+        //Camera Position
         gamecam = new OrthographicCamera();
-        gamecam.setToOrtho(false, Schmelda.WIDTH / 2, Schmelda.HEIGHT / 2);
-        gamePort = new FitViewport(Schmelda.WIDTH, Schmelda.HEIGHT, gamecam);
+        gamecam.setToOrtho(false, Schmelda.WIDTH, Schmelda.HEIGHT);
 
+        //Background Texture
         background = new Texture("landscapes/bg.png");
         playBtn = new Texture("characters/chain/chain.png");
 
+        //Particle Generation
         flameLeft = new ParticleEffect();
-        flameLeft.load(Gdx.files.internal("Particles/flame_1"), Gdx.files.internal(""));
+        flameLeft.load(Gdx.files.internal("particles/flame_1"), Gdx.files.internal("particles/"));
         flameLeft.getEmitters().first().setPosition(Gdx.graphics.getWidth()/4 - 150, Gdx.graphics.getHeight()/4 - 100);
         flameLeft.start();
 
         flameRight = new ParticleEffect();
-        flameRight.load(Gdx.files.internal("Particles/flame_1"), Gdx.files.internal(""));
+        flameRight.load(Gdx.files.internal("particles/flame_1"), Gdx.files.internal("particles/"));
         flameRight.getEmitters().first().setPosition(Gdx.graphics.getWidth()/4 + 150, Gdx.graphics.getHeight()/4 - 100);
         flameRight.start();
-//        gamecam.position.set(gamePort.getWorldWidth(), gamePort.getWorldHeight(), 0);
-//        gamecam.position.set(Schmelda.WIDTH, Schmelda.HEIGHT, 0);
+        gamecam.position.set(Schmelda.WIDTH / 2, Schmelda.HEIGHT / 2, 0);
+        gamecam.update();
 
     }
 
@@ -80,7 +81,7 @@ public class MainMenuScreen implements Screen{
 
         game.batch.begin();
 
-        game.batch.draw(background, 0, 0);
+        game.batch.draw(background, 0, 0,Schmelda.WIDTH, Schmelda.HEIGHT);
         game.batch.draw(playBtn, gamecam.position.x - playBtn.getWidth() / 2, gamecam.position.y);
 
         flameLeft.draw(game.batch);
@@ -117,6 +118,8 @@ public class MainMenuScreen implements Screen{
 
     @Override
     public void dispose() {
+        flameLeft.dispose();
+        flameRight.dispose();
         background.dispose();
         playBtn.dispose();
     }

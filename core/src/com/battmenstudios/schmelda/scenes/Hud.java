@@ -27,7 +27,7 @@ public class Hud implements Disposable {
 
     public Hud(SpriteBatch sb) {
         //setup the HUD viewport using a new camera speperate from gamecam
-        viewport = new FitViewport(Schmelda.WIDTH, Schmelda.HEIGHT, new OrthographicCamera());
+        viewport = new FitViewport(Schmelda.WIDTH / 4, Schmelda.HEIGHT / 4, new OrthographicCamera());
         stage = new Stage(viewport, sb);
 
         //define a table to organize display

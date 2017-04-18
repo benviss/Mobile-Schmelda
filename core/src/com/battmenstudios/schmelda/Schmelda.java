@@ -5,16 +5,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.battmenstudios.schmelda.screens.MainMenuScreen;
 
 public class Schmelda extends Game {
-	public static final int WIDTH = 800;
-	public static final int HEIGHT = 480;
-//	public static final float PPM = 100;
+	public static final int WIDTH = 1920;
+	public static final int HEIGHT = 1080;
+	public static final float PPM = 100;
 	public int currentLevel = 1;
 
 	public static final String TITLE = "Schmelda";
 	public SpriteBatch batch;
 
 	//Default Chain Attributes
-	public static final float DEFAULT_MOVEMENT_SPEED = 75;
+	public static final float DEFAULT_MOVEMENT_SPEED = 1;
 
 	@Override
 	public void create () {

@@ -1,0 +1,46 @@
+chain_animations.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+chain_left
+  rotate: false
+  xy: 0, 0
+  size: 448, 64
+  orig: 448, 64
+  offset: 0, 0
+  index: -1
+chain_right
+  rotate: false
+  xy: 1, 29
+  size: 336, 32
+  orig: 336, 32
+  offset: 0, 0
+  index: -1
+chain_up
+  rotate: false
+  xy: 1, 29
+  size: 336, 32
+  orig: 336, 32
+  offset: 0, 0
+  index: -1
+chain_down
+  rotate: false
+  xy: 1, 29
+  size: 336, 32
+  orig: 336, 32
+  offset: 0, 0
+  index: -1
+chain_left_down
+  rotate: false
+  xy: 1, 29
+  size: 336, 32
+  orig: 336, 32
+  offset: 0, 0
+  index: -1
+chain_right_down
+  rotate: false
+  xy: 1, 29
+  size: 336, 32
+  orig: 336, 32
+  offset: 0, 0
+  index: -1

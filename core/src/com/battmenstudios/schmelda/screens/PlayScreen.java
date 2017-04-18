@@ -4,25 +4,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.battmenstudios.schmelda.Schmelda;
 import com.battmenstudios.schmelda.constants.Level;
+import com.battmenstudios.schmelda.models.Chain;
 import com.battmenstudios.schmelda.scenes.Hud;
-import com.battmenstudios.schmelda.sprites.Chain;
 import com.battmenstudios.schmelda.tools.B2WorldCreator;
+import com.battmenstudios.schmelda.tools.PlayerController;
 
 /**
  * Created by benvi on 4/10/2017.
@@ -55,55 +50,46 @@ public class PlayScreen implements Screen {
     private Hud hud;
 
     //For Touch Processing
+    private PlayerController playerController;
+
+    //Animations Atlas
+    private TextureAtlas atlas;
 
     public PlayScreen(Schmelda game) {
+        atlas = new TextureAtlas("characters/chain/chain_animations.pack");
+
         this.game = game;
 
         //Camera to follow chain
         gamecam = new OrthographicCamera();
-        gamecam.setToOrtho(false, Schmelda.WIDTH / 2, Schmelda.HEIGHT / 2);
-        gamePort = new FitViewport(Schmelda.WIDTH, Schmelda.HEIGHT, gamecam);
+        gamecam.setToOrtho(false, Schmelda.WIDTH / Schmelda.PPM / 5, Schmelda.HEIGHT / Schmelda.PPM / 5);
+
+        gamePort = new FitViewport(16,9,gamecam);
+
 
         //Map generation and renderer
         map = Level.getLevel(1);
         background = new int[] {0, 1, 2, 3};
         foreground = new int[] {4};
-        renderer = new OrthogonalTiledMapRenderer(map);
+        renderer = new OrthogonalTiledMapRenderer(map, 1 / Schmelda.PPM);
 
         //Generates HUD display
         hud = new Hud(game.batch);
 
         //Initially centers gamecam position
-        gamecam.position.set(gamePort.getWorldWidth(), gamePort.getWorldHeight(), 0);
 
 
         //Create World
         world = new World(new Vector2(0, 0), true);
         //allows for debugging lines of box2d
         b2dr = new Box2DDebugRenderer();
+        //create world collision
+        creator = new B2WorldCreator(this);
 
-//        creator = new B2WorldCreator(this);
-        chain = new Chain(200, 150, this);
+        //Create Play Joystick
+        playerController = new PlayerController(game);
 
-        BodyDef bdef = new BodyDef();
-        PolygonShape shape = new PolygonShape();
-        FixtureDef fdef = new FixtureDef();
-        Body body;
-
-        //Construct World Barriers
-        for (MapObject object : map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set((rect.getX() + rect.getWidth() / 2), (rect.getY() + rect.getHeight() / 2));
-
-            body = world.createBody(bdef);
-
-            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
-            fdef.shape = shape;
-            body.createFixture(fdef);
-        }
-
+        chain = new Chain(6200, 6200, this);
 
     }
 
@@ -111,6 +97,30 @@ public class PlayScreen implements Screen {
         if (Gdx.input.justTouched()) {
             hud.update(dt);
         }
+
+
+//        switch (Gdx.app.getType()) {
+//            case Android:
+                chain.setInputVelocity(playerController.getTouchpad().getKnobPercentX(),playerController.getTouchpad().getKnobPercentY());
+//                break;
+//            case Desktop:
+//                float x = 0;
+//                float y = 0;
+//                if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+//                    y += 1;
+//                }
+//                if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+//                    x -= 1;
+//                }
+//                if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+//                    x += 1;
+//                }
+//                if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+//                    y -= 1;
+//                }
+//                chain.setInputVelocity(x, y);
+//                break;
+//        }
     }
 
 
@@ -144,15 +154,17 @@ public class PlayScreen implements Screen {
         b2dr.render(world, gamecam.combined);
         game.batch.setProjectionMatrix(gamecam.combined);
 
-        game.batch.begin();
-//        chain.draw(game.batch);
-        game.batch.end();
+//        game.batch.begin();
+//        game.batch.draw(chain.getTexture(), chain.getB2body().getPosition().x - 16 / Schmelda.PPM, chain.getB2body().getPosition().y - 8 / Schmelda.PPM, 32 / Schmelda.PPM, 32 / Schmelda.PPM);
+//        game.batch.end();
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.update(dt);
         hud.stage.draw();
 
         renderer.render(foreground);
+
+        playerController.draw();
 
     }
 
@@ -193,4 +205,7 @@ public class PlayScreen implements Screen {
         return world;
     }
 
+    public TextureAtlas getAtlas() {
+        return atlas;
+    }
 }
