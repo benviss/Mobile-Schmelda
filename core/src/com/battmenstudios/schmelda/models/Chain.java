@@ -13,8 +13,6 @@ import com.badlogic.gdx.utils.Array;
 import com.battmenstudios.schmelda.Schmelda;
 import com.battmenstudios.schmelda.screens.PlayScreen;
 
-import static com.battmenstudios.schmelda.models.Chain.State.IDLE;
-
 
 /**
  * Created by benvi on 4/11/2017.
@@ -22,8 +20,8 @@ import static com.battmenstudios.schmelda.models.Chain.State.IDLE;
 
 public class Chain extends Sprite{
     public enum State {LEFT, RIGHT, UP, DOWN, IDLE}
-    public State currentState = IDLE;
-    public State previousState = IDLE;
+    public State currentState = State.IDLE;
+    public State previousState = State.IDLE;
     private Texture texture;
 
     //Define Physics Body
@@ -119,20 +117,48 @@ public class Chain extends Sprite{
     }
 
     public State getState() {
-        float x =  inputVelocityX * 100;
-        float y =  inputVelocityY * 100;
-        double test = 1.5 * Math.PI - Math.atan2(y * 10, x * 10);
-        System.out.println(x + " }} " + y);
+        float x =  inputVelocityX;
+        float y =  inputVelocityY;
 
-//        if (x > 10 && y > 10) {
-//            return RIGHT;
-//        } else if (x > 0.3 && y < -0.3) {
-//            return DOWN;
-//        } else if (x > 0.3 && y > 0) {
-//
-//        } else if (x > 0.3 && y > 0) {
-//
-//        }
+        if (x > 0.3) {
+            x = 1;
+        } else if (x < -0.3) {
+            x = -1;
+        } else {
+            x = 0;
+        }
+        if (y > 0.3) {
+            y = 1;
+        } else if (y < -0.3) {
+            y = -1;
+        } else {
+            y = 0;
+        }
+        if (x == 1 && y == 1) {
+            System.out.println("Up Right");
+            return State.RIGHT;
+        } else if (x == 1 && y == -1) {
+            System.out.println("Down Right");
+            return State.RIGHT;
+        } else if (x == -1 && y == 1) {
+            System.out.println("Up Left");
+            return State.LEFT;
+        } else if (x == -1 && y == - 1) {
+            System.out.println("Down Left");
+            return State.LEFT;
+        } else if (x == 1 && y == 0) {
+            System.out.println("Right");
+            return State.RIGHT;
+        } else if (x == -1 && y == 0) {
+            System.out.println("Left");
+            return State.LEFT;
+        } else if (x == 0 && y == 1) {
+            System.out.println("Up");
+            return State.UP;
+        } else if (x == 0 && y == -1) {
+            System.out.println("Down");
+            return State.DOWN;
+        }
         return currentState;
     }
 
